@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">股票分析</string>
+    <string name="market">行情</string>
+    <string name="watchlist">自选</string>
+    <string name="search_hint">搜索股票代码或名称</string>
+    <string name="refresh">刷新</string>
+    <string name="loading">加载中…</string>
+    <string name="error_network">网络错误，请检查网络连接</string>
+    <string name="retry">重试</string>
+    <string name="add_watchlist">添加自选</string>
+    <string name="remove_watchlist">删除自选</string>
+    <string name="open">开盘</string>
+    <string name="high">最高</string>
+    <string name="low">最低</string>
+    <string name="close">收盘</string>
+    <string name="volume">成交量</string>
+    <string name="amount">成交额</string>
+    <string name="change">涨跌额</string>
+    <string name="change_pct">涨跌幅</string>
+    <string name="pe">市盈率</string>
+    <string name="pb">市净率</string>
+    <string name="market_cap">市值</string>
+    <string name="day">日线</string>
+    <string name="week">周线</string>
+    <string name="month">月线</string>
+</resources>

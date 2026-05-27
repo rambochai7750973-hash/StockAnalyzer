@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="up">#FF1A7B39</color>
+    <color name="down">#FFCF132B</color>
+    <color name="flat">#FF999999</color>
+    <color name="background">#FFF5F5F5</color>
+    <color name="surface">#FFFFFFFF</color>
+    <color name="primary">#FF1565C0</color>
+    <color name="onPrimary">#FFFFFFFF</color>
+    <color name="kline_up">#FFE53935</color>
+    <color name="kline_down">#FF1A7B39</color>
+    <color name="ma5">#FF2196F3</color>
+    <color name="ma10">#FFFF9800</color>
+    <color name="ma20">#FF9C27B0</color>
+    <color name="ma60">#FF607D8B</color>
+</resources>
