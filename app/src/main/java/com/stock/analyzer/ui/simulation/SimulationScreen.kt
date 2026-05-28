@@ -71,7 +71,7 @@ fun SimulationScreen(
             colors = TopAppBarDefaults.topAppBarColors(containerColor = GfRed)
         )
 
-        AccountSummaryCard(state)
+        AccountSummaryCard(state, viewModel::addFunds)
 
         TabRow(
             selectedTabIndex = state.selectedTab,
@@ -135,7 +135,7 @@ fun SimulationScreen(
 }
 
 @Composable
-private fun AccountSummaryCard(state: SimulationUiState) {
+private fun AccountSummaryCard(state: SimulationUiState, onAddFunds: () -> Unit) {
     val account = state.account
     Card(
         modifier = Modifier.fillMaxWidth().padding(12.dp),
@@ -157,7 +157,7 @@ private fun AccountSummaryCard(state: SimulationUiState) {
                     )
                 }
                 Button(
-                    onClick = { viewModel.addFunds() },
+                    onClick = onAddFunds,
                     colors = ButtonDefaults.buttonColors(containerColor = GfGold),
                     shape = RoundedCornerShape(8.dp)
                 ) {
