@@ -90,14 +90,6 @@ class DetailViewModel @Inject constructor(
             }
         }
     }
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    error = e.message
-                )
-            }
-        }
-    }
 
     private fun loadKlineData() {
         viewModelScope.launch {
