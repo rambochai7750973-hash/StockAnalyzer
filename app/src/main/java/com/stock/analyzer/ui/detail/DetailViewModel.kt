@@ -74,9 +74,7 @@ class DetailViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
             try {
-                val stock = getStockQuoteUseCase.getStocks()
-                // 从流中获取指定股票
-                getStockQuoteUseCase.searchStocks(stockCode).collect { stocks ->
+                getStockQuoteUseCase.searchStocks(stockCode.uppercase()).collect { stocks ->
                     val found = stocks.firstOrNull()
                     _uiState.value = _uiState.value.copy(
                         stock = found,
@@ -84,6 +82,14 @@ class DetailViewModel @Inject constructor(
                     )
                     if (found != null) return@collect
                 }
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    error = e.message
+                )
+            }
+        }
+    }
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,

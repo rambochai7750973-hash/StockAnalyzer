@@ -15,6 +15,9 @@ interface StockDao {
     @Query("SELECT * FROM stocks WHERE code LIKE '%' || :query || '%' OR name LIKE '%' || :query || '%'")
     fun searchStocks(query: String): Flow<List<StockEntity>>
 
+    @Query("SELECT COUNT(*) FROM stocks")
+    suspend fun getCount(): Int
+
     @Query("SELECT * FROM stocks WHERE code = :code")
     suspend fun getStockByCode(code: String): StockEntity?
 
