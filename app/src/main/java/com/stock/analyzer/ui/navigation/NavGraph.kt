@@ -2,6 +2,7 @@ package com.stock.analyzer.ui.navigation
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.ShowChart
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
@@ -25,6 +26,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.stock.analyzer.ui.detail.DetailScreen
 import com.stock.analyzer.ui.market.MarketScreen
+import com.stock.analyzer.ui.simulation.SimulationScreen
 import com.stock.analyzer.ui.watchlist.WatchlistScreen
 
 data class BottomItem(
@@ -36,6 +38,7 @@ data class BottomItem(
 private val bottomItems = listOf(
     BottomItem("行情", Icons.Default.ShowChart, Screen.Market),
     BottomItem("自选", Icons.Default.Star, Screen.Watchlist),
+    BottomItem("模拟", Icons.Default.AccountBalance, Screen.Simulation),
 )
 
 @Composable
@@ -99,6 +102,13 @@ fun NavGraph() {
             }
             composable(Screen.Watchlist.route) {
                 WatchlistScreen(
+                    onStockClick = { code ->
+                        navController.navigate(Screen.Detail.createRoute(code))
+                    }
+                )
+            }
+            composable(Screen.Simulation.route) {
+                SimulationScreen(
                     onStockClick = { code ->
                         navController.navigate(Screen.Detail.createRoute(code))
                     }

@@ -3,12 +3,17 @@ package com.stock.analyzer.di
 import android.content.Context
 import androidx.room.Room
 import com.stock.analyzer.data.local.AppDatabase
+import com.stock.analyzer.data.local.dao.AccountDao
+import com.stock.analyzer.data.local.dao.PortfolioDao
 import com.stock.analyzer.data.local.dao.StockDao
+import com.stock.analyzer.data.local.dao.TradeDao
 import com.stock.analyzer.data.local.dao.WatchlistDao
 import com.stock.analyzer.data.remote.SinaApi
 import com.stock.analyzer.data.remote.TencentApi
+import com.stock.analyzer.domain.repository.SimulationRepository
 import com.stock.analyzer.domain.repository.StockRepository
 import com.stock.analyzer.domain.repository.WatchlistRepository
+import com.stock.analyzer.data.repository.SimulationRepositoryImpl
 import com.stock.analyzer.data.repository.StockRepositoryImpl
 import com.stock.analyzer.data.repository.WatchlistRepositoryImpl
 import com.google.gson.Gson
@@ -115,9 +120,25 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun providePortfolioDao(db: AppDatabase): PortfolioDao = db.portfolioDao()
+
+    @Provides
+    @Singleton
+    fun provideTradeDao(db: AppDatabase): TradeDao = db.tradeDao()
+
+    @Provides
+    @Singleton
+    fun provideAccountDao(db: AppDatabase): AccountDao = db.accountDao()
+
+    @Provides
+    @Singleton
     fun provideStockRepository(impl: StockRepositoryImpl): StockRepository = impl
 
     @Provides
     @Singleton
     fun provideWatchlistRepository(impl: WatchlistRepositoryImpl): WatchlistRepository = impl
+
+    @Provides
+    @Singleton
+    fun provideSimulationRepository(impl: SimulationRepositoryImpl): SimulationRepository = impl
 }
