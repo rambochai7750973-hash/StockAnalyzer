@@ -5,17 +5,18 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
 private val LightColorScheme = lightColorScheme(
-    primary = androidx.compose.ui.graphics.Color(0xFF1565C0),
+    primary = GfRed,
     onPrimary = androidx.compose.ui.graphics.Color.White,
-    primaryContainer = androidx.compose.ui.graphics.Color(0xFFD1E4FF),
-    onPrimaryContainer = androidx.compose.ui.graphics.Color(0xFF001D36),
-    secondary = androidx.compose.ui.graphics.Color(0xFF535F70),
+    primaryContainer = GfLightGold,
+    onPrimaryContainer = GfDarkRed,
+    secondary = GfGold,
     onSecondary = androidx.compose.ui.graphics.Color.White,
+    tertiary = GfGold,
     background = androidx.compose.ui.graphics.Color(0xFFF5F5F5),
     onBackground = androidx.compose.ui.graphics.Color(0xFF1A1C1E),
     surface = androidx.compose.ui.graphics.Color.White,
     onSurface = androidx.compose.ui.graphics.Color(0xFF1A1C1E),
-    error = androidx.compose.ui.graphics.Color(0xFFBA1A1A),
+    error = RedDown,
 )
 
 @Composable

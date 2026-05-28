@@ -1,16 +1,21 @@
 package com.stock.analyzer.ui.market.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -51,34 +56,50 @@ fun StockListItem(
             Text(
                 text = String.format("%.2f", stock.close),
                 fontWeight = FontWeight.Bold,
-                fontSize = 18.sp
+                fontSize = 18.sp,
+                color = priceColor
             )
         }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 4.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+                .padding(top = 6.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            val color = when {
-                stock.changePercent > 0 -> GreenUp
-                stock.changePercent < 0 -> RedDown
-                else -> androidx.compose.ui.graphics.Color.Gray
+            val isUp = stock.changePercent >= 0
+            val bgColor = when {
+                isUp -> GreenUp
+                else -> RedDown
+            }
+            val priceColor = when {
+                isUp -> GreenUp
+                else -> RedDown
+            }
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = bgColor,
+                        shape = RoundedCornerShape(4.dp)
+                    )
+                    .padding(horizontal = 8.dp, vertical = 3.dp)
+            ) {
+                Text(
+                    text = "${String.format("%.2f", stock.changePercent)}%",
+                    color = Color.White,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
             }
             Text(
                 text = "${String.format("%.2f", stock.change)}",
-                color = color,
+                color = bgColor,
                 fontSize = 13.sp
             )
             Text(
-                text = "${String.format("%.2f", stock.changePercent)}%",
-                color = color,
-                fontSize = 13.sp,
-                fontWeight = FontWeight.Medium
-            )
-            Text(
                 text = "量:${formatVolume(stock.volume)}",
-                color = androidx.compose.ui.graphics.Color.Gray,
+                color = Color.Gray,
                 fontSize = 12.sp
             )
         }

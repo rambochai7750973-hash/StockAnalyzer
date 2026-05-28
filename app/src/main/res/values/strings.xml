@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">股票分析</string>
+    <string name="app_name">广发证券</string>
     <string name="market">行情</string>
     <string name="watchlist">自选</string>
     <string name="search_hint">搜索股票代码或名称</string>

@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.stock.analyzer.domain.model.TimePeriod
+import com.stock.analyzer.ui.theme.GfRed
 
 @Composable
 fun TimePeriodSelector(
@@ -30,7 +31,7 @@ fun TimePeriodSelector(
                 onClick = { onPeriodSelected(period) },
                 label = { Text(period.label) },
                 colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = androidx.compose.ui.graphics.Color(0xFF1565C0),
+                    selectedContainerColor = GfRed,
                     selectedLabelColor = androidx.compose.ui.graphics.Color.White
                 )
             )

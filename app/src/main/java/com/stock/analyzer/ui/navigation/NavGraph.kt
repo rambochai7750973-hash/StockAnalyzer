@@ -6,7 +6,9 @@ import androidx.compose.material.icons.filled.ShowChart
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -49,7 +51,10 @@ fun NavGraph() {
     Scaffold(
         bottomBar = {
             if (showBottomBar) {
-                NavigationBar {
+                NavigationBar(
+                    containerColor = androidx.compose.ui.graphics.Color.White,
+                    contentColor = com.stock.analyzer.ui.theme.GfRed
+                ) {
                     bottomItems.forEach { item ->
                         val selected = currentDestination?.hierarchy?.any {
                             it.route == item.screen.route
@@ -66,7 +71,14 @@ fun NavGraph() {
                                 }
                             },
                             icon = { Icon(item.icon, contentDescription = item.label) },
-                            label = { Text(item.label) }
+                            label = { Text(item.label) },
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = com.stock.analyzer.ui.theme.GfRed,
+                                selectedTextColor = com.stock.analyzer.ui.theme.GfRed,
+                                unselectedIconColor = androidx.compose.ui.graphics.Color.Gray,
+                                unselectedTextColor = androidx.compose.ui.graphics.Color.Gray,
+                                indicatorColor = com.stock.analyzer.ui.theme.GfLightGold
+                            )
                         )
                     }
                 }

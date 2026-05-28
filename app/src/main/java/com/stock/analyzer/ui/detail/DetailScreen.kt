@@ -27,6 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.stock.analyzer.ui.detail.components.QuoteHeader
 import com.stock.analyzer.ui.kline.KlineChart
 import com.stock.analyzer.ui.kline.components.TimePeriodSelector
+import com.stock.analyzer.ui.theme.GfRed
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,7 +66,7 @@ fun DetailScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF1565C0)
+                    containerColor = GfRed
                 )
             )
         }
