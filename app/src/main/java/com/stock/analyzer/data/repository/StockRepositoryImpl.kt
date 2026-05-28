@@ -36,16 +36,19 @@ class StockRepositoryImpl @Inject constructor(
     override suspend fun refreshStocks() {
         withContext(Dispatchers.IO) {
             try {
-                val codes = listOf(
-                    "sh600519", "sz000001", "sh600036", "sz300750",
-                    "sh601318", "sh600900", "sz002415", "sh600276",
-                    "sz000858", "sh601166"
-                )
-                val raw = sinaApi.getQuotes(codes.joinToString(","))
-                val entities = parseSinaResponse(raw)
-                if (entities.isNotEmpty()) {
+                val allCodes = ALL_STOCK_CODES
+                val batchSize = 30
+                val allEntities = mutableListOf<StockEntity>()
+                allCodes.chunked(batchSize).forEach { batch ->
+                    try {
+                        val raw = sinaApi.getQuotes(batch.joinToString(","))
+                        val entities = parseSinaResponse(raw)
+                        allEntities.addAll(entities)
+                    } catch (_: Exception) { }
+                }
+                if (allEntities.isNotEmpty()) {
                     stockDao.deleteAll()
-                    stockDao.insertStocks(entities)
+                    stockDao.insertStocks(allEntities)
                 } else {
                     seedMockData()
                 }
@@ -131,18 +134,23 @@ class StockRepositoryImpl @Inject constructor(
 
     private fun mockStocks(): List<StockEntity> {
         val now = System.currentTimeMillis()
-        return listOf(
-            StockEntity("SH600519", "贵州茅台", 1880.0, 1900.0, 1870.0, 1895.0, 1885.0, 3500000, 6.6e9, 10.0, 0.53, now),
-            StockEntity("SZ000001", "平安银行", 11.5, 11.8, 11.4, 11.75, 11.5, 85000000, 9.8e8, 0.25, 2.17, now),
-            StockEntity("SH600036", "招商银行", 36.0, 36.5, 35.8, 36.3, 36.0, 42000000, 1.5e9, 0.3, 0.83, now),
-            StockEntity("SZ300750", "宁德时代", 220.0, 225.0, 218.0, 224.0, 220.0, 28000000, 6.2e9, 4.0, 1.82, now),
-            StockEntity("SH601318", "中国平安", 45.0, 45.5, 44.8, 45.2, 45.0, 55000000, 2.5e9, 0.2, 0.44, now),
-            StockEntity("SH600900", "长江电力", 26.0, 26.3, 25.9, 26.2, 26.0, 38000000, 9.9e8, 0.2, 0.77, now),
-            StockEntity("SZ002415", "海康威视", 35.0, 35.5, 34.8, 35.3, 35.0, 22000000, 7.8e8, 0.3, 0.86, now),
-            StockEntity("SH600276", "恒瑞医药", 48.0, 48.8, 47.5, 48.5, 48.0, 18000000, 8.7e8, 0.5, 1.04, now),
-            StockEntity("SZ000858", "五粮液", 145.0, 147.0, 144.0, 146.5, 145.0, 15000000, 2.2e9, 1.5, 1.03, now),
-            StockEntity("SH601166", "兴业银行", 18.0, 18.2, 17.9, 18.15, 18.0, 62000000, 1.1e9, 0.15, 0.83, now),
-        )
+        return MOCK_STOCK_DATA.map { (code, name, price) ->
+            val change = (Math.random() - 0.5) * price * 0.06
+            val close = price + change
+            StockEntity(
+                code = code, name = name,
+                open = price - (Math.random() - 0.5) * price * 0.02,
+                close = close,
+                high = maxOf(close, price) + Math.random() * price * 0.015,
+                low = minOf(close, price) - Math.random() * price * 0.015,
+                preClose = price,
+                volume = (1 + Math.random() * 50).toLong() * 1000000,
+                amount = (1 + Math.random() * 50).toDouble() * 1e8,
+                change = close - price,
+                changePercent = if (price != 0.0) (close - price) / price * 100 else 0.0,
+                timestamp = now
+            )
+        }
     }
 
     private fun mockKlineData(): List<KlineData> {
@@ -170,4 +178,105 @@ class StockRepositoryImpl @Inject constructor(
         change = change, changePercent = changePercent,
         timestamp = timestamp
     )
+
+    companion object {
+        val ALL_STOCK_CODES = listOf(
+            "sh600519", "sz000001", "sh600036", "sz300750", "sh601318",
+            "sh600900", "sz002415", "sh600276", "sz000858", "sh601166",
+            "sh600887", "sh600030", "sh600585", "sz002714", "sz300059",
+            "sh600809", "sh600104", "sh600690", "sz000651", "sh600028",
+            "sh600019", "sh600031", "sh600048", "sz002304", "sz002475",
+            "sh600309", "sh600703", "sh600436", "sz000568", "sz000333",
+            "sh600941", "sz002230", "sh600760", "sz002459", "sz300274",
+            "sh600438", "sh600010", "sh600050", "sz000063", "sh600895",
+            "sz000100", "sh600196", "sz002129", "sh600570", "sh600362",
+            "sz000002", "sz002236", "sh600893", "sh600011", "sz300124",
+            "sh600089", "sh600150", "sh600660", "sz000538", "sz000625",
+            "sh600022", "sh600029", "sz002142", "sh600837", "sz000725",
+            "sh600085", "sz000157", "sh600547", "sz002007", "sh600406",
+            "sh600690", "sz000301", "sh600036", "sh600958", "sz002601",
+            "sz300015", "sh600588", "sz002271", "sh600298", "sz000596",
+            "sz002001", "sh600176", "sz000858", "sz300433", "sh600183"
+        ).distinct()
+
+        val MOCK_STOCK_DATA = listOf(
+            Triple("SH600519", "贵州茅台", 1895.0),
+            Triple("SZ000001", "平安银行", 11.75),
+            Triple("SH600036", "招商银行", 36.30),
+            Triple("SZ300750", "宁德时代", 224.0),
+            Triple("SH601318", "中国平安", 45.20),
+            Triple("SH600900", "长江电力", 26.20),
+            Triple("SZ002415", "海康威视", 35.30),
+            Triple("SH600276", "恒瑞医药", 48.50),
+            Triple("SZ000858", "五粮液", 146.5),
+            Triple("SH601166", "兴业银行", 18.15),
+            Triple("SH600887", "伊利股份", 28.50),
+            Triple("SH600030", "中信证券", 22.30),
+            Triple("SH600585", "海螺水泥", 32.80),
+            Triple("SZ002714", "牧原股份", 68.50),
+            Triple("SZ300059", "东方财富", 24.60),
+            Triple("SH600809", "山西汾酒", 248.0),
+            Triple("SH600104", "上汽集团", 19.80),
+            Triple("SH600690", "海尔智家", 28.60),
+            Triple("SZ000651", "格力电器", 42.30),
+            Triple("SH600028", "中国石化", 6.85),
+            Triple("SH600019", "宝钢股份", 7.20),
+            Triple("SH600031", "三一重工", 32.50),
+            Triple("SH600048", "保利发展", 15.80),
+            Triple("SZ002304", "洋河股份", 142.0),
+            Triple("SZ002475", "立讯精密", 38.50),
+            Triple("SH600309", "万华化学", 92.50),
+            Triple("SH600703", "三安光电", 24.30),
+            Triple("SH600436", "片仔癀", 298.0),
+            Triple("SZ000568", "泸州老窖", 198.0),
+            Triple("SZ000333", "美的集团", 65.80),
+            Triple("SH600941", "中国移动", 102.0),
+            Triple("SZ002230", "科大讯飞", 62.30),
+            Triple("SH600760", "中航沈飞", 62.80),
+            Triple("SZ002459", "晶澳科技", 56.50),
+            Triple("SZ300274", "阳光电源", 112.0),
+            Triple("SH600438", "通威股份", 42.80),
+            Triple("SH600010", "包钢股份", 2.35),
+            Triple("SH600050", "中国联通", 5.20),
+            Triple("SZ000063", "中兴通讯", 38.50),
+            Triple("SH600895", "张江高科", 22.80),
+            Triple("SZ000100", "TCL科技", 6.80),
+            Triple("SH600196", "复星医药", 35.60),
+            Triple("SZ002129", "中环股份", 45.80),
+            Triple("SH600570", "恒生电子", 58.50),
+            Triple("SH600362", "江西铜业", 22.50),
+            Triple("SZ000002", "万科A", 14.50),
+            Triple("SZ002236", "大华股份", 22.80),
+            Triple("SH600893", "航发动力", 45.80),
+            Triple("SH600011", "华能国际", 8.50),
+            Triple("SZ300124", "汇川技术", 72.50),
+            Triple("SH600089", "特变电工", 22.60),
+            Triple("SH600150", "中国船舶", 35.80),
+            Triple("SH600660", "福耀玻璃", 41.50),
+            Triple("SZ000538", "云南白药", 68.50),
+            Triple("SZ000625", "长安汽车", 18.80),
+            Triple("SH600022", "山东钢铁", 1.85),
+            Triple("SH600029", "南方航空", 6.80),
+            Triple("SZ002142", "宁波银行", 28.50),
+            Triple("SH600837", "海通证券", 12.30),
+            Triple("SZ000725", "京东方A", 4.80),
+            Triple("SH600085", "同仁堂", 55.60),
+            Triple("SZ000157", "中联重科", 8.90),
+            Triple("SH600547", "山东黄金", 28.80),
+            Triple("SZ002007", "华兰生物", 28.50),
+            Triple("SH600406", "国电南瑞", 28.60),
+            Triple("SZ000301", "东方盛虹", 15.80),
+            Triple("SH600958", "东方证券", 12.80),
+            Triple("SZ002601", "龙佰集团", 22.50),
+            Triple("SZ300015", "爱尔眼科", 35.80),
+            Triple("SH600588", "用友网络", 25.60),
+            Triple("SZ002271", "东方雨虹", 32.50),
+            Triple("SH600298", "安琪酵母", 38.50),
+            Triple("SZ000596", "古井贡酒", 268.0),
+            Triple("SZ002001", "新和成", 22.60),
+            Triple("SH600176", "中国巨石", 15.80),
+            Triple("SZ300433", "蓝思科技", 18.50),
+            Triple("SH600183", "生益科技", 22.30),
+        )
+    }
 }
