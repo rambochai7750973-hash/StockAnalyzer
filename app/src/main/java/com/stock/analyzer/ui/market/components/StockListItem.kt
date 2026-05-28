@@ -30,6 +30,10 @@ fun StockListItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val isUp = stock.changePercent >= 0
+    val priceColor = if (isUp) GreenUp else RedDown
+    val bgColor = priceColor
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -67,15 +71,6 @@ fun StockListItem(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            val isUp = stock.changePercent >= 0
-            val bgColor = when {
-                isUp -> GreenUp
-                else -> RedDown
-            }
-            val priceColor = when {
-                isUp -> GreenUp
-                else -> RedDown
-            }
             Box(
                 modifier = Modifier
                     .background(
